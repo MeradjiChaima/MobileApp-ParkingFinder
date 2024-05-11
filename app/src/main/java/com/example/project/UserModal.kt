@@ -21,4 +21,19 @@ class UserModal(private val userRepository: UserRepository) : ViewModel() {
             param(isLoggedIn.value)
         }
     }
+
+    fun registerUser(username: String, email: String, password: String, param: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            val response: Response<User> = userRepository.registerUser(RegisterRequest(username, email, password))
+            if (response.isSuccessful) {
+                isLoggedIn.value = true
+            } else {
+                isLoggedIn.value = false
+            }
+            param(isLoggedIn.value)
+        }
+    }
+
+
+
 }

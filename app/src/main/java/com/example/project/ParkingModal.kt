@@ -41,4 +41,15 @@ class ParkingModal(private val parkingRepository: ParkingRepository) : ViewModel
             return ParkingModal(parkingRepository) as T
         }
     }
+
+    fun searchParkingByName(parkingName: String) {
+        viewModelScope.launch {
+            val parkings = parkingRepository.getParkingByName(parkingName)
+            if (parkings != null) {
+                allParkings.value = parkings
+            }
+        }
+    }
+
+
 }

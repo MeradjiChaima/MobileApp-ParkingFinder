@@ -7,5 +7,11 @@ class UserRepository(private val endPoint: EndPoint) {
         val loginRequest = LoginRequest(email, password)
         return endPoint.loginUser(loginRequest)
     }
+
+    suspend fun registerUser(registerRequest: RegisterRequest): Response<User> {
+        return endPoint.registerUser(registerRequest)
+    }
+
+
 }
 

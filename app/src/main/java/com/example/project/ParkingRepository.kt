@@ -34,6 +34,18 @@ class ParkingRepository(private val endPoint: EndPoint.Companion) {
         }
     }
 
+    suspend fun getParkingByName(parkingName: String): List<Parking>? {
+        return try {
+            val response = endPoint.create().getParkingByName(parkingName)
+            if (response.isSuccessful) {
+                response.body()
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
 
 
 }

@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -37,6 +38,9 @@ class MainActivity : ComponentActivity() {
         val userModal = UserModal(userRepository = userRepository)
 
 
+        val reservationRepository = ReservationRepository(EndPoint.create())
+        val reservationModal = ReservationModal(reservationRepository = reservationRepository)
+
         setContent {
             ProjectTheme {
                 // A surface container using the 'background' color from the theme
@@ -44,7 +48,7 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     val authManager = AuthentificationManager(context = applicationContext)
 
-                    NavigationExample(navController = navController, authManager = authManager, parkingModel = parkingModel, userModal= userModal)
+                    NavigationExample(navController = navController, authManager = authManager, parkingModel = parkingModel, userModal = userModal, reservationModal = reservationModal) // Passage de reservationModal à NavigationExample
                 }
             }
         }
@@ -52,12 +56,16 @@ class MainActivity : ComponentActivity() {
 }
 
 
+
 @Composable
-fun NavigationExample(navController: NavHostController, authManager: AuthentificationManager, parkingModel: ParkingModal, userModal: UserModal) {
+fun NavigationExample(navController: NavHostController, authManager: AuthentificationManager, parkingModel: ParkingModal, userModal: UserModal, reservationModal: ReservationModal) {
 
     NavHost(navController = navController, startDestination = Destination.Login.route) {
         composable(Destination.Login.route) {
             Login(navController = navController, authManager = authManager, userModal = userModal)
+        }
+        composable(Destination.Register.route) {
+            Register(navController = navController, authManager = authManager, userModal = userModal)
         }
         composable(Destination.Home.route) {
             ScaffoldWithBottomBar(navController = navController, currentRoute = Destination.Home.route) {
@@ -78,7 +86,7 @@ fun NavigationExample(navController: NavHostController, authManager: Authentific
             val parkingId = it.arguments?.getString("parkingId")?.toIntOrNull() // Utilisation de toIntOrNull() pour gérer les valeurs null
             if (parkingId != null) {
                 ScaffoldWithBottomBar(navController = navController, currentRoute = Destination.DetailParking.route) {
-                    DetailParking(parkingId = parkingId, parkingModal = parkingModel)
+                    DetailParking(parkingId = parkingId, parkingModal = parkingModel ,reservationModal = reservationModal ,authManager = authManager)
                 }
             }
         }

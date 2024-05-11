@@ -7,6 +7,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 
 interface EndPoint {
@@ -29,4 +30,11 @@ interface EndPoint {
     suspend fun getParkingById(@Path("parkingId") parkingId: Int): Response<Parking>
     @POST("login")
     suspend fun loginUser(@Body loginRequest: LoginRequest): Response<User>
+    @POST("register")
+    suspend fun registerUser(@Body registerRequest: RegisterRequest): Response<User>
+    @GET("parkingSearch")
+    suspend fun getParkingByName(@Query("name") name: String): Response<List<Parking>>
+    @POST("makeReservation")
+    suspend fun addReservation(@Body reservationRequest:ReservationRequest): Response<ReservationRequest>
+
 }
