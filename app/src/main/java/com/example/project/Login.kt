@@ -13,10 +13,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -102,7 +100,14 @@ fun Login(navController: NavController, authManager: AuthentificationManager, us
                     password = passwordState.value
                 ) { success ->
                     if (success) {
-                        authManager.saveCredentials(emailState.value, passwordState.value)
+                        userModal.getUserIdByEmail(emailState.value) { user ->
+                            if (user != null) {
+                                authManager.saveUserId(user.ID_utilisateur)
+                                navController.navigate(Destination.Home.route)
+                            } else {
+                                errorMessage.value = "Failed to retrieve user ID."
+                            }
+                        }
                         navController.navigate(Destination.Home.route)
                     } else {
                         errorMessage.value = "Email or password is incorrect. Please try again."

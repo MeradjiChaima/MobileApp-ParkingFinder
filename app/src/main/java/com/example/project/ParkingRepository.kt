@@ -36,7 +36,7 @@ class ParkingRepository(private val endPoint: EndPoint.Companion) {
 
     suspend fun getParkingByName(parkingName: String): List<Parking>? {
         return try {
-            val response = endPoint.create().getParkingByName(parkingName)
+            val response = endPoint.create().getParkingByKeyword(parkingName)
             if (response.isSuccessful) {
                 response.body()
             } else {
@@ -46,6 +46,76 @@ class ParkingRepository(private val endPoint: EndPoint.Companion) {
             null
         }
     }
+    suspend fun getBusInfoByParkingID(parkingId:Int): RequestBus?{
+        return try {
+            val response = endPoint.create().getBusInfoByParkingID(parkingId)
+            if (response.isSuccessful) {
+                response.body()
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+
+    suspend fun getBikeInfoByParkingID(parkingId:Int): RequestBike?{
+        return try {
+            val response = endPoint.create().getBikeInfoByParkingID(parkingId)
+            if (response.isSuccessful) {
+                response.body()
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+
+    suspend fun getCarInfoByParkingID(parkingId:Int): RequestCar?{
+        return try {
+            val response = endPoint.create().getCarInfoByParkingID(parkingId)
+            if (response.isSuccessful) {
+                response.body()
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+
+
+
+    suspend fun getServicesByParkingID(Idparking:Int): List<Service>? {
+        return try {
+            val response = endPoint.create().getServicesByParkingID(Idparking)
+            if (response.isSuccessful) {
+                response.body()
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    suspend fun getReviewsByParkingID(Idparking:Int): List<Review>? {
+        return try {
+            val response = endPoint.create().getReviewsByParkingID(Idparking)
+            if (response.isSuccessful) {
+                response.body()
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
+
 
 
 }

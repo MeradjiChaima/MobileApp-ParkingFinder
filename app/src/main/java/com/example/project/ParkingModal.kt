@@ -9,7 +9,12 @@ import kotlinx.coroutines.launch
 
 class ParkingModal(private val parkingRepository: ParkingRepository) : ViewModel() {
     var allParkings = mutableStateOf<List<Parking>>(emptyList())
+    var allServices = mutableStateOf<List<Service>>(emptyList())
+    var allReviews = mutableStateOf<List<Review>>(emptyList())
     var parking = mutableStateOf<Parking?>(null) // Définir parking comme un état mutable
+    var parkingBus = mutableStateOf<RequestBus?>(null)
+    var parkingBike = mutableStateOf<RequestBike?>(null)
+    var parkingCar = mutableStateOf<RequestCar?>(null)
 
     fun getAllParkings() {
         viewModelScope.launch {
@@ -25,7 +30,8 @@ class ParkingModal(private val parkingRepository: ParkingRepository) : ViewModel
             try {
                 val response = parkingRepository.getParkingById(parkingId)
                 if (response != null) {
-                    parking.value = response // Mettre à jour l'état avec les détails du parking récupéré
+                    parking.value =
+                        response // Mettre à jour l'état avec les détails du parking récupéré
                 } else {
                     // Gérer le cas où response est null ou la requête a échoué
                 }
@@ -50,6 +56,85 @@ class ParkingModal(private val parkingRepository: ParkingRepository) : ViewModel
             }
         }
     }
+
+    fun getBusInfoByParkingID(parkingId: Int) {
+        viewModelScope.launch {
+            try {
+                val response = parkingRepository.getBusInfoByParkingID(parkingId)
+                if (response != null) {
+                    parkingBus.value =
+                        response // Mettre à jour l'état avec les détails du parking récupéré
+                } else {
+                    // Gérer le cas où response est null ou la requête a échoué
+                }
+            } catch (e: Exception) {
+                // Gérer les exceptions
+            }
+        }
+    }
+
+    fun getBikeInfoByParkingID(parkingId: Int) {
+        viewModelScope.launch {
+            try {
+                val response = parkingRepository.getBikeInfoByParkingID(parkingId)
+                if (response != null) {
+                    parkingBike.value =
+                        response // Mettre à jour l'état avec les détails du parking récupéré
+                } else {
+                    // Gérer le cas où response est null ou la requête a échoué
+                }
+            } catch (e: Exception) {
+                // Gérer les exceptions
+            }
+        }
+    }
+
+    fun getCarInfoByParkingID(idParking: Int) {
+        viewModelScope.launch {
+            try {
+                val response = parkingRepository.getCarInfoByParkingID(idParking)
+                if (response != null) {
+                    parkingCar.value =
+                        response // Mettre à jour l'état avec les détails du parking récupéré
+                } else {
+                    // Gérer le cas où response est null ou la requête a échoué
+                }
+            } catch (e: Exception) {
+                // Gérer les exceptions
+            }
+        }
+    }
+
+    fun getServicesByParkingID(idParking: Int) {
+        viewModelScope.launch {
+            try {
+                val response = parkingRepository.getServicesByParkingID(idParking)
+                if (response != null) {
+                    allServices.value = response // Mettre à jour l'état avec les détails du parking récupéré
+                } else {
+                }
+            } catch (e: Exception) {
+            }
+        }
+    }
+
+    fun getReviewsByParkingID(idParking: Int) {
+        viewModelScope.launch {
+            try {
+                val response = parkingRepository.getReviewsByParkingID(idParking)
+                if (response != null) {
+                    allReviews.value = response // Mettre à jour l'état avec les détails du parking récupéré
+                } else {
+                }
+            } catch (e: Exception) {
+
+            }
+        }
+    }
+
+
+
+
 
 
 }

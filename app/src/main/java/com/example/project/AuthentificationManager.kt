@@ -10,20 +10,35 @@ class AuthentificationManager(context: Context) {
         return sharedPreferences.getBoolean("isLoggedIn", false)
     }
 
-    fun saveCredentials(  email: String, password: String) {
-        val isLoggedIn = true
-        sharedPreferences.edit().putBoolean("isLoggedIn", isLoggedIn).apply()
-        sharedPreferences.edit().apply {
-            putString("email", email)
-            putString("password", password)
-            apply()
-        }
-    }
+//    fun saveCredentials(  email: String, password: String) {
+//        val isLoggedIn = true
+//        sharedPreferences.edit().putBoolean("isLoggedIn", isLoggedIn).apply()
+//        sharedPreferences.edit().apply {
+//            putString("email", email)
+//            putString("password", password)
+//            apply()
+//        }
+//    }
 
     fun logout() {
         sharedPreferences.edit().remove("isLoggedIn").apply()
     }
-    fun getUserEmail(): String? {
-        return sharedPreferences.getString("email", null)
+//    fun getUserEmail(): String? {
+//        return sharedPreferences.getString("email", null)
+//    }
+
+    fun saveUserId(userId: Int) {
+        val isLoggedIn = true
+        sharedPreferences.edit().putBoolean("isLoggedIn", isLoggedIn).apply()
+        sharedPreferences.edit().apply {
+            putInt("userId", userId)
+            apply()
+        }
     }
+
+
+    fun getUserId(): Int {
+        return sharedPreferences.getInt("userId",0)
+    }
+
 }

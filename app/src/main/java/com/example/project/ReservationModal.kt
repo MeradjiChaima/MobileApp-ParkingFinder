@@ -29,6 +29,16 @@ class ReservationModal(private val reservationRepository: ReservationRepository)
         }
     }
 
+    fun getReservationByEmail(email: String, param: (Reservation?) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val reservation: Reservation? = reservationRepository.getReservationByEmail(email)
+                param(reservation)
+            } catch (e: Exception) {
+                param(null)
+            }
+        }
+    }
 
 
 }

@@ -79,7 +79,7 @@ fun NavigationExample(navController: NavHostController, authManager: Authentific
         }
         composable(Destination.Profile.route) {
             ScaffoldWithBottomBar(navController = navController, currentRoute = Destination.Profile.route) {
-                Profile(navController = navController, authManager = authManager)
+                Profile( userModal = userModal,authManager = authManager , navController = navController )
             }
         }
         composable(Destination.DetailParking.route + "/{parkingId}") { // Ajout de l'argument parkingId à la route

@@ -19,6 +19,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -82,7 +85,7 @@ fun homePage(parkingModel: ParkingModal, navController: NavController) {
 
             Spacer(modifier = Modifier.width(8.dp))
             Image(
-                painter = painterResource(id = R.drawable.filter),
+                painter = painterResource(id = R.drawable.baseline_filter_list_24),
                 contentDescription = null,
                 modifier = Modifier.size(50.dp)
             )
@@ -105,7 +108,6 @@ fun ParkingItem(parking: Parking,navController: NavController) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
-//        elevation = 8.dp
     ) {
         Row(
             modifier = Modifier
@@ -118,6 +120,7 @@ fun ParkingItem(parking: Parking,navController: NavController) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             parking.displayImage2()
+            Spacer(modifier = Modifier.width(8.dp))
             Column(
                 modifier = Modifier
                     .padding(start = 16.dp)
@@ -128,15 +131,37 @@ fun ParkingItem(parking: Parking,navController: NavController) {
                     style = TextStyle(fontWeight = FontWeight.Bold),
                     fontSize = 16.sp
                 )
-                Text(text = parking.Commune, fontSize = 14.sp)
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Row(){
+                   Icon(
+                       imageVector = Icons.Default.LocationOn,
+                       contentDescription = null,
+                       tint =  Color(0xFFFED94D)
+                   )
+                   Text(text = parking.Commune, fontSize = 14.sp)
+               }
+
+
                 Spacer(modifier = Modifier.height(8.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(id = R.drawable.cargreen),
-                        contentDescription = null,
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Text(text = "${parking.Num_valides} available out of ${parking.Num_reserves}")
+                Row {
+                    Row(){
+                        Image(
+                            painter = painterResource(id = R.drawable.baseline_directions_car_24),
+                            contentDescription = null,
+                            modifier = Modifier.size(30.dp)
+                        )
+                        Text(text = "${parking.TotalPlace}%")
+                    }
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Image(
+                            painter = painterResource(id = R.drawable.baseline_directions_car_filled_24),
+                            contentDescription = null,
+                            modifier = Modifier.size(30.dp)
+                        )
+                        Text(text = "${parking.Num_valides}%")
+                    }
                 }
             }
         }
@@ -173,11 +198,18 @@ fun Header(profilePicture: Painter, profileName: String) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                Icon(
+                    imageVector = Icons.Default.Favorite,
+                    contentDescription = null,
+                    tint = Color(0xFFFED94D),
+                    modifier = Modifier.size(25.dp)
+                )
+                Spacer(modifier = Modifier.width(10.dp))
 
                 Icon(
                     imageVector = Icons.Default.Notifications,
                     contentDescription = null,
-                    tint = Color(0xFF655AE4),
+//                    tint = Color(0xFF655AE4),
                     modifier = Modifier.size(25.dp)
                 )
                 Image(

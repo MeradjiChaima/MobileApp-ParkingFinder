@@ -32,6 +32,7 @@ fun Register(navController: NavController, authManager: AuthentificationManager,
     val emailState = remember { mutableStateOf("") }
     val passwordState = remember { mutableStateOf("") }
     val errorMessage = remember { mutableStateOf("") }
+    val phoneNumberState = remember { mutableStateOf("") }
 //    val isLoggedIn = userModal.isLoggedIn.value
     if (authManager.isLoggedIn()) {
         navController.navigate(Destination.Home.route)
@@ -49,7 +50,8 @@ fun Register(navController: NavController, authManager: AuthentificationManager,
             Image(
                 painter = painterResource(id = R.drawable.headerlogin),
                 contentDescription = "Filter",
-                modifier = Modifier.height(200.dp)
+                modifier = Modifier
+                    .height(200.dp)
                     .width(300.dp)
             )
         }
@@ -78,7 +80,15 @@ fun Register(navController: NavController, authManager: AuthentificationManager,
             label = { Text("Username") },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 10.dp , start =50.dp , end =50.dp )
+                .padding(bottom = 10.dp, start = 50.dp, end = 50.dp)
+        )
+        OutlinedTextField(
+            value = userNameState.value,
+            onValueChange = { phoneNumberState.value = it },
+            label = { Text("Phone Number") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 10.dp, start = 50.dp, end = 50.dp)
         )
         OutlinedTextField(
             value = emailState.value,
@@ -86,34 +96,43 @@ fun Register(navController: NavController, authManager: AuthentificationManager,
             label = { Text("Email") },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 10.dp , start =50.dp , end =50.dp )
+                .padding(bottom = 10.dp, start = 50.dp, end = 50.dp)
         )
         OutlinedTextField(
             value = passwordState.value,
             onValueChange = { passwordState.value = it },
             label = { Text("Password") },
-            modifier = Modifier.fillMaxWidth()
-                .padding(bottom = 10.dp , start =50.dp , end =50.dp )
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 10.dp, start = 50.dp, end = 50.dp)
         )
 
         Button(
             onClick = {
 
                 userModal.registerUser(
-                    username=  userNameState.value ,
+                    username = userNameState.value,
                     email = emailState.value,
-                    password = passwordState.value
+                    password = passwordState.value,
+                    PhoneNumber = phoneNumberState.value
                 ) { success ->
                     if (success) {
-                        navController.navigate(Destination.Home.route)
+                        userModal.getUserIdByEmail(emailState.value) { user ->
+                            if (user != null) {
+                                authManager.saveUserId(user.ID_utilisateur)
+                                navController.navigate(Destination.Home.route)
+                            } else {
+                                errorMessage.value = "Failed to retrieve user ID."
+                            }
+                        }
                     } else {
-                        errorMessage.value = "Email already existe!, try to login "
+                        errorMessage.value = "Email already exists! Please try to login."
                     }
                 }
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp , start =50.dp , end =50.dp )
+                .padding(top = 16.dp, start = 50.dp, end = 50.dp)
         ) {
             Text(text = "Register")
         }

@@ -11,6 +11,13 @@ class UserRepository(private val endPoint: EndPoint) {
     suspend fun registerUser(registerRequest: RegisterRequest): Response<User> {
         return endPoint.registerUser(registerRequest)
     }
+    suspend fun getUserIdByEmail(email: String): Response<User> {
+        return endPoint.getUserIdByEmail(email)
+    }
+
+    suspend fun getUserById(id: Int): Response<User> {
+        return endPoint.getUserById(id)
+    }
 
 
 }
