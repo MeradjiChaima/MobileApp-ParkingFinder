@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import retrofit2.Response
+import java.io.File
+import java.io.IOException
 
 class UserModal(private val userRepository: UserRepository) : ViewModel() {
 
@@ -60,6 +62,20 @@ class UserModal(private val userRepository: UserRepository) : ViewModel() {
             if (response.isSuccessful) {
                 user = response.body()
             } else {
+            }
+        }
+    }
+
+
+    fun updateProfilePicture(file: File, userId: Int) {
+        viewModelScope.launch {
+            try {
+                val response: Response<Unit> = userRepository.updateProfilePicture(file, userId)
+                if (!response.isSuccessful) {
+                    // Handle unsuccessful response
+                }
+            } catch (e: IOException) {
+                // Handle IO exception
             }
         }
     }

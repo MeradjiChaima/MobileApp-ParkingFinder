@@ -116,6 +116,19 @@ class ParkingRepository(private val endPoint: EndPoint.Companion) {
         }
     }
 
+    suspend fun filterParkings(filters: FilterRequest): List<Parking>? {
+        return try {
+            val response = endPoint.create().filterParkings(filters)
+            if (response.isSuccessful) {
+                response.body() // Retourne les parkings filtrés si la requête est réussie
+            } else {
+                null // Retourne null si la requête a échoué
+            }
+        } catch (e: Exception) {
+            null // Retourne null en cas d'exception
+        }
+    }
+
 
 
 }

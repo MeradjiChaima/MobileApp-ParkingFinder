@@ -1,7 +1,13 @@
 package com.example.project
 
+import android.content.ContentResolver
+import android.content.Context
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,10 +16,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,15 +38,47 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import java.io.File
 
 
 @Composable
 fun Profile(userModal: UserModal, authManager:AuthentificationManager, navController: NavController) {
     val loggedInUserId = authManager.getUserId()
+    val context = LocalContext.current
+    val imageUri = remember { mutableStateOf<Uri?>(null) }
+    var isLoading by remember { mutableStateOf(true) }
+
+    val selectImageLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            if (it.scheme == ContentResolver.SCHEME_CONTENT) {
+                // Content URI, handle differently
+                val contentResolver = context.contentResolver
+                val inputStream = contentResolver.openInputStream(uri)
+                inputStream?.let { inputStream ->
+                    val tempFile = File.createTempFile("temp", null, context.cacheDir)
+                    tempFile.outputStream().use { outputStream ->
+                        inputStream.copyTo(outputStream)
+                    }
+                    imageUri.value = Uri.fromFile(tempFile)
+                }
+            } else {
+                // File URI, proceed as usual
+                imageUri.value = it
+            }
+        }
+    }
+
+    LaunchedEffect(imageUri.value) {
+        imageUri.value?.let { uri ->
+            val file = File(uri.path)
+            userModal.updateProfilePicture(file, loggedInUserId)
+        }
+    }
 
     LaunchedEffect(loggedInUserId) {
          userModal.getUserById(loggedInUserId) // Assurez-vous que l'ID est correct ici
@@ -55,14 +99,11 @@ fun Profile(userModal: UserModal, authManager:AuthentificationManager, navContro
                 modifier = Modifier.padding(top = 16.dp)
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Image(
-                painter = painterResource(id = R.drawable.profile), // Replace 'image' with your actual drawable resource
-                contentDescription = "Photo de profil",
-                modifier = Modifier
-                    .size(120.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
+            usere.displayImage()
+            ChangeProfilePictureButton(onSelectImage = {
+                selectImageLauncher.launch("image/*") // Ouvre le sélecteur d'image pour tous les types d'images
+            })
+
             Spacer(modifier = Modifier.height(32.dp)) // Space between image and card
             Card(
                 shape = RoundedCornerShape(20.dp),
@@ -132,7 +173,6 @@ fun Profile(userModal: UserModal, authManager:AuthentificationManager, navContro
                         popUpTo(navController.graph.startDestinationId) {
                             saveState = true
                         }
-                        // Éviter d'ajouter la destination à la pile de retour lorsque vous revenez à l'écran de connexion
                         launchSingleTop = true
                         // Permettre de revenir à l'écran de connexion
                         restoreState = true
@@ -155,4 +195,18 @@ fun Profile(userModal: UserModal, authManager:AuthentificationManager, navContro
     }
 }
 
+@Composable
+fun ChangeProfilePictureButton(onSelectImage: () -> Unit) {
+    IconButton(onClick = onSelectImage) {
+        Icon(
+            imageVector = Icons.Default.Create,
+            contentDescription = null,
+        )
+    }
+}
 
+fun Uri.toFile(context: Context): File {
+    return File(getPath()).apply {
+        parentFile.mkdirs()
+    }
+}

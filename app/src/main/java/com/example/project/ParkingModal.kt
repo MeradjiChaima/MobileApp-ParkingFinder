@@ -134,6 +134,15 @@ class ParkingModal(private val parkingRepository: ParkingRepository) : ViewModel
 
 
 
+    fun filterParkings(filters: FilterRequest) {
+        viewModelScope.launch {
+            val parkings = parkingRepository.filterParkings(filters)
+            if (parkings != null) {
+                allParkings.value = parkings
+            }
+        }
+    }
+
 
 
 

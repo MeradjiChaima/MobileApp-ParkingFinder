@@ -81,7 +81,6 @@ fun DetailParking(context: Context = LocalContext.current , parkingId: Int, park
 
 
 
-
            item {
                parking.displayImage(modifier = Modifier.fillMaxSize())
                Row(modifier = Modifier
@@ -127,7 +126,7 @@ fun DetailParking(context: Context = LocalContext.current , parkingId: Int, park
                     .padding(top = 8.dp)
                     .padding(start = 10.dp)) {
                     CustomIconCall(Icons.Default.Call) {
-                        val data = Uri.parse(parking.PhoneNumber)
+                        val data = Uri.parse("tel:"+parking.PhoneNumber)
                         val intent = Intent(Intent.ACTION_DIAL, data)
                         context.startActivity(intent)
                     }
@@ -226,17 +225,6 @@ fun DetailParking(context: Context = LocalContext.current , parkingId: Int, park
                     }
                 }
             }
-
-
-
-
-
-
-
-
-
-
-
 
 
             // Book Now button

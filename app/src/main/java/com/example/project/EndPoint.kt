@@ -1,11 +1,15 @@
 package com.example.project
 
+import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -41,6 +45,12 @@ interface EndPoint {
     @GET("userId")
     suspend fun getUserById(@Query("id") id: Int ): Response<User>
 
+    // Dans votre interface EndPoint
+    @Multipart
+    @PUT("users/{userId}/photo")
+    suspend fun updateProfilePicture(@Part file: MultipartBody.Part, @Path("userId") userId: Int): Response<Unit>
+
+
     @GET("parkingSearch")
     suspend fun getParkingByKeyword(@Query("keyword") keyword: String): Response<List<Parking>>
     @POST("makeReservation")
@@ -59,6 +69,14 @@ interface EndPoint {
 
     @GET("parkingReviews/{idParking}")
     suspend fun getReviewsByParkingID(@Path("idParking") idParking: Int): Response<List<Review>>
+    @POST("FilterParkings")
+    suspend fun filterParkings(@Body filters: FilterRequest): Response<List<Parking>>
 
 
 }
+
+data class FilterRequest(
+    val commune: String,
+    val types: List<String>,
+    val maxPrice: Double?
+)
